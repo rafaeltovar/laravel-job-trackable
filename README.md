@@ -20,7 +20,7 @@ composer require rafaeltovar/laravel-job-trackable
 - [x] Redis persist / NoSQL database
 - [x] Controller for manage Tracks
 - [x] Simple and light
-- [] Cli commands
+- [ ] Cli commands
 
 ## Instructions
 

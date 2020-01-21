@@ -13,7 +13,6 @@
             "name": "Rafael Tovar",
             "email": "hola@rafaeltovar.info",
             "homepage": "https://code.rafaeltovar.info/"
-
         }
     ],
     "keywords": [
@@ -29,6 +28,6 @@
         "ircmaxell/random-lib": "^1.2",
         "illuminate/support": ">=5.6",
         "illuminate/contracts": ">=5.6",
-        "illuminate/queue": ">=5.6",
-    },
+        "illuminate/queue": ">=5.6"
+    }
 }
