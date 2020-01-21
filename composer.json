@@ -1,5 +1,5 @@
 {
-    "name": "rafaeltovar/laravel-job-trackeable",
+    "name": "rafaeltovar/laravel-job-trackable",
     "description": "Laravel job tracked in Redis.",
     "license": "MIT",
     "autoload": {
