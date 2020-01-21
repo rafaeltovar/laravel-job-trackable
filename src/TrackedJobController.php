@@ -32,7 +32,7 @@ class TrackedJobController
         return $this->getRedis()->setex($key, $this->expire, serialize($tracked));
     }
 
-    protected function get(string $id) : ?TrackedJob
+    public function get(string $id) : ?TrackedJob
     {
         $key = sprintf("%s:%s", $this->prefix, $id);
         $value = $this->getRedis()->get($key);

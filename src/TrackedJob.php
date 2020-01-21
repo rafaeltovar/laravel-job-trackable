@@ -1,7 +1,7 @@
 <?php
 namespace LaravelJobTrackable;
 
-class TrackedJob
+class TrackedJob implements \JsonSerializable
 {
     const STATUS_QUEUED = 'queued';
     const STATUS_EXECUTING = 'executing';
@@ -26,7 +26,8 @@ class TrackedJob
         $generator = $factory->getGenerator(new SecurityLib\Strength(SecurityLib\Strength::MEDIUM));
         $this->id = $generator->generateString(6);
         $this->type = $type;
-        $this->input;
+        $this->input = $input;
+        $this->output = [];
         $this->status = self::STATUS_QUEUED;
         $this->queuedAt = time();
         $this->tries = 0;
@@ -62,6 +63,11 @@ class TrackedJob
         return $this;
     }
 
+    public function getStatus() : string
+    {
+        return $this->status;
+    }
+
     public function setOutput(array $output = []) : self
     {
         $this->output = $output;
@@ -69,10 +75,58 @@ class TrackedJob
         return $this;
     }
 
+    public function getOutput() : array
+    {
+        return $this->output;
+    }
+
     public function try() : self
     {
         $this->tries++;
 
         return $this;
+    }
+
+    protected function getDateTime($time) : ?\DateTime
+    {
+        if(isset($time))
+            return new \DateTime(sprintf("@%s", $time));
+
+        return null;
+    }
+
+    public function getQueuedAt() : ?\Datetime
+    {
+        return $this->getDateTime($this->queuedAt);
+    }
+
+    public function getStartedAt() : ?\Datetime
+    {
+        return $this->getDateTime($this->startedAt);
+    }
+
+    public function getRetryAt() : ?\Datetime
+    {
+        return $this->getDateTime($this->retryAt);
+    }
+
+    public function getFinishedAt() : ?\Datetime
+    {
+        return $this->getDateTime($this->finishedAt);
+    }
+
+    public function jsonSerialize() : mixed
+    {
+        return [
+            'id' => $this->getId(),
+            'status' => $this->getStatus(),
+            'input' => $this->input,
+            'output' => $this->output,
+            'retries' => $this->retries,
+            'queued_at' => $this->getQueuedAt() ?? $this->getQueuedAt()->format('c'),
+            'started_at' => $this->getStartedAt() ?? $this->getStartedAt()->format('c'),
+            'retry_at' => $this->getRetryAt() ?? $this->getRetryAt()->format('c'),
+            'finished_at' => $this->getFinishedAt() ?? $this->getFinishedAt()->format('c')
+        ];
     }
 }
