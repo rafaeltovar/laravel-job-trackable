@@ -37,7 +37,7 @@ class LaravelJobTrackableServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/job-trackable.php', 'job-trackable');
+        $this->mergeConfigFrom(__DIR__ . '/../../config/job-trackable.php', 'job-trackable');
 
         $this->publishes([
             __DIR__ . '/../config/' => config_path(),
