@@ -1,0 +1,34 @@
+{
+    "name": "rafaeltovar/laravel-job-trackeable",
+    "description": "Laravel job tracked in Redis.",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "LaravelJobTrackable\\": "src"
+        }
+    },
+    "homepage": "https://github.com/rafaeltovar/laravel-job-trackable",
+    "authors": [
+        {
+            "name": "Rafael Tovar",
+            "email": "hola@rafaeltovar.info",
+            "homepage": "https://code.rafaeltovar.info/"
+
+        }
+    ],
+    "keywords": [
+		"laravel",
+		"job",
+		"queue",
+        "redis",
+        "trackable",
+        "status"
+    ],
+    "require": {
+        "php": ">=7.1",
+        "ircmaxell/random-lib": "^1.2",
+        "illuminate/support": ">=5.6",
+        "illuminate/contracts": ">=5.6",
+        "illuminate/queue": ">=5.6",
+    },
+}
