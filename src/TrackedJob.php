@@ -62,7 +62,7 @@ class TrackedJob
         return $this;
     }
 
-    public function setOutput(array $output) : self
+    public function setOutput(array $output = []) : self
     {
         $this->output = $output;
 

@@ -19,4 +19,10 @@ trait TrackableJob
     {
         return $this->trackId;
     }
+
+    protected function setOutput(array $output = [])
+    {
+         $ctrl = app(TrackedJobController::class);
+         $crtl->setOutput($this->getTrackId(), $output);
+    }
 }

@@ -37,7 +37,10 @@ class TrackedJobController
         $key = sprintf("%s:%s", $this->prefix, $id);
         $value = $this->getRedis()->get($key);
 
-        return isset($value)? unserialize($value) : null;
+        if(!isset($value))
+            throw new \Exception(sprintf("Tracked job with id '%s' not found!: %s", $id));
+
+        return unserialize($value);
     }
 
     public function start(string $type, array $input = []) : TrackedJob
@@ -76,16 +79,13 @@ class TrackedJobController
         return null;
     }
 
-    public function statusUpdate($event, string $status) : void
+    protected function statusUpdate($event, string $status) : void
     {
         $job = $this->getJobFromEvent($event);
         $id = $this->getJobTrackId($job);
 
         if(isset($id)) {
             $tracked = $this->get($id);
-
-            if(!isset($tracked))
-                throw new \Exception(sprintf("Tracked job with id '%s' not found!", $id));
 
             $tracked->setStatus($status);
 
@@ -113,5 +113,11 @@ class TrackedJobController
         $this->statusUpdate($event, TrackedJob::STATUS_FAILED);
     }
 
+    public function setOutput(string $id, array $output = []) : void
+    {
+        $tracked = $this->get($id);
+        $tracked->setOutput($output);
+        $this->save($tracked);
+    }
 
 }
