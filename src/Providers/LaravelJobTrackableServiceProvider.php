@@ -3,10 +3,13 @@ namespace LaravelJobTrackable\Providers;
 
 use LaravelJobTrackable\TrackedJobController;
 
-use Illuminate\Support\Facades\Queue;
+use Redis;
+
+///use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Queue\QueueManager;
 
 class LaravelJobTrackableServiceProvider extends ServiceProvider
 {
@@ -40,7 +43,7 @@ class LaravelJobTrackableServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../../config/job-trackable.php', 'job-trackable');
 
         $this->publishes([
-            __DIR__ . '/../config/' => config_path(),
+            __DIR__ . '/../../config/' => config_path(),
         ], 'config');
 
         $this->app->singleton(TrackedJobController::class, function ($app) {
