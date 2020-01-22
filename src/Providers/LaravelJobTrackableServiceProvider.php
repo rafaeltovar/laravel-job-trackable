@@ -4,9 +4,13 @@ namespace LaravelJobTrackable\Providers;
 use LaravelJobTrackable\TrackedJobController;
 
 use Illuminate\Support\ServiceProvider;
+
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Queue\Events\JobExceptionOccurred;
 use Illuminate\Queue\QueueManager;
+
 use Illuminate\Support\Facades\Redis;
 
 class LaravelJobTrackableServiceProvider extends ServiceProvider
