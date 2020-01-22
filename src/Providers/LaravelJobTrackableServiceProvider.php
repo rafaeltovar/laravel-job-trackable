@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Queue\QueueManager;
+use Illuminate\Support\Facades\Redis;
 
 class LaravelJobTrackableServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,7 @@ class LaravelJobTrackableServiceProvider extends ServiceProvider
 
         $this->app->singleton(TrackedJobController::class, function ($app) {
             return new TrackedJobController(
+                Redis::connection(),
                 config('job-trackable.prefix'),
                 config('job-trackable.expire')
             );

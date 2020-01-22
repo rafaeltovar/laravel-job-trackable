@@ -1,8 +1,6 @@
 <?php
 namespace LaravelJobTrackable;
 
-use Redis;
-
 use Illuminate\Queue\Events\JobExceptionOccurred;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
@@ -12,18 +10,20 @@ use Imtigger\LaravelJobStatus\JobStatusUpdater;
 
 class TrackedJobController
 {
+    protected $redis;
     protected $prefix;
     protected $expire;
 
-    public function __construct(string $prefix, int $expire)
+    public function __construct($redis, string $prefix, int $expire)
     {
+        $this->redis = $redis;
         $this->prefix = $prefix;
         $this->expire = $expire;
     }
 
     protected function getRedis()
     {
-        return Redis::connection();
+        return $this->redis;
     }
 
     protected function save(TrackedJob $tracked)
