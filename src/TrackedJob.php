@@ -22,8 +22,8 @@ class TrackedJob implements \JsonSerializable
 
     public function __construct(string $type, array $input = [])
     {
-        $factory = new RandomLib\Factory;
-        $generator = $factory->getGenerator(new SecurityLib\Strength(SecurityLib\Strength::MEDIUM));
+        $factory = new \RandomLib\Factory;
+        $generator = $factory->getGenerator(new \SecurityLib\Strength(\SecurityLib\Strength::MEDIUM));
         $this->id = $generator->generateString(6);
         $this->type = $type;
         $this->input = $input;

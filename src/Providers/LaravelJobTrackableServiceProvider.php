@@ -3,9 +3,6 @@ namespace LaravelJobTrackable\Providers;
 
 use LaravelJobTrackable\TrackedJobController;
 
-use Redis;
-
-///use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
@@ -13,26 +10,6 @@ use Illuminate\Queue\QueueManager;
 
 class LaravelJobTrackableServiceProvider extends ServiceProvider
 {
-    // /**
-    //  * Bootstrap any application services.
-    //  *
-    //  * @return void
-    //  */
-    // public function boot()
-    // {
-    //     Queue::before(function (JobProcessing $event) {
-    //         // $event->connectionName
-    //         // $event->job
-    //         // $event->job->payload()
-    //     });
-    //
-    //     Queue::after(function (JobProcessed $event) {
-    //         // $event->connectionName
-    //         // $event->job
-    //         // $event->job->payload()
-    //     });
-    // }
-    //
     /**
      * Register the service provider.
      *
@@ -48,7 +25,6 @@ class LaravelJobTrackableServiceProvider extends ServiceProvider
 
         $this->app->singleton(TrackedJobController::class, function ($app) {
             return new TrackedJobController(
-                Redis::connection(),
                 config('job-trackable.prefix'),
                 config('job-trackable.expire')
             );
