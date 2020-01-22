@@ -38,18 +38,22 @@ class TrackedJobController
         $value = $this->getRedis()->get($key);
 
         if(!isset($value))
-            throw new \Exception(sprintf("Tracked job with id '%s' not found!: %s", $id));
+            throw new \Exception(sprintf("Tracked job with id '%s' not found!", $id));
 
         return unserialize($value);
     }
 
     public function start(string $type, array $input = []) : TrackedJob
     {
-        $value = 1;
-        while(isset($value))
+        $found = true;
+        while($found)
         {
-            $tracked = new TrackedJob($type, $input);
-            $value = $this->get($tracked->getId());
+            try {
+                $tracked = new TrackedJob($type, $input);
+                $value = $this->get($tracked->getId());
+            } catch(\Exception $e) {
+                $found = false;
+            }
         }
 
         $this->save($tracked);
