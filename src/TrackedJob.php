@@ -1,6 +1,9 @@
 <?php
 namespace LaravelJobTrackable;
 
+use Carbon\Carbon,
+    Carbon\CarbonInterface;
+
 class TrackedJob implements \JsonSerializable
 {
     const STATUS_QUEUED = 'queued';
@@ -24,12 +27,12 @@ class TrackedJob implements \JsonSerializable
     {
         $factory = new \RandomLib\Factory;
         $generator = $factory->getGenerator(new \SecurityLib\Strength(\SecurityLib\Strength::MEDIUM));
-        $this->id = $generator->generateString(6);
+        $this->id = $generator->generateString(6, "0123456789abcdefghijklmnopqrstuvwxyz");
         $this->type = $type;
         $this->input = $input;
         $this->output = [];
         $this->status = self::STATUS_QUEUED;
-        $this->queuedAt = time();
+        $this->queuedAt = Carbon::now();
         $this->tries = 0;
     }
 
@@ -43,17 +46,17 @@ class TrackedJob implements \JsonSerializable
         switch($status)
         {
             case self::STATUS_EXECUTING:
-                if($this->retries==0)
-                    $this->startedAt = time();
+                if($this->tries==0)
+                    $this->startedAt = Carbon::now();
                 else
                     $status = self::STATUS_RETRYING;
 
-                $this->retryAt = time();
+                $this->retryAt = Carbon::now();
                 $this->try();
                 break;
             case self::STATUS_FINISHED:
-            case self::FAILED:
-                $this->finishedAt = time();
+            case self::STATUS_FAILED:
+                $this->finishedAt = Carbon::now();
                 break;
 
         }
@@ -87,46 +90,38 @@ class TrackedJob implements \JsonSerializable
         return $this;
     }
 
-    protected function getDateTime($time) : ?\DateTime
+    public function getQueuedAt() : ?Carbon
     {
-        if(isset($time))
-            return new \DateTime(sprintf("@%s", $time));
-
-        return null;
+        return $this->queuedAt;
     }
 
-    public function getQueuedAt() : ?\Datetime
+    public function getStartedAt() : ?Carbon
     {
-        return $this->getDateTime($this->queuedAt);
+        return $this->startedAt;
     }
 
-    public function getStartedAt() : ?\Datetime
+    public function getRetryAt() : ?Carbon
     {
-        return $this->getDateTime($this->startedAt);
+        return $this->retryAt;
     }
 
-    public function getRetryAt() : ?\Datetime
+    public function getFinishedAt() : ?Carbon
     {
-        return $this->getDateTime($this->retryAt);
+        return $this->finishedAt;
     }
 
-    public function getFinishedAt() : ?\Datetime
-    {
-        return $this->getDateTime($this->finishedAt);
-    }
-
-    public function jsonSerialize() : mixed
+    public function jsonSerialize()
     {
         return [
             'id' => $this->getId(),
             'status' => $this->getStatus(),
             'input' => $this->input,
             'output' => $this->output,
-            'retries' => $this->retries,
-            'queued_at' => $this->getQueuedAt() ?? $this->getQueuedAt()->format('c'),
-            'started_at' => $this->getStartedAt() ?? $this->getStartedAt()->format('c'),
-            'retry_at' => $this->getRetryAt() ?? $this->getRetryAt()->format('c'),
-            'finished_at' => $this->getFinishedAt() ?? $this->getFinishedAt()->format('c')
+            'tries' => $this->tries,
+            'queued_at' => $this->getQueuedAt(),
+            'started_at' => $this->getStartedAt(),
+            'retry_at' => $this->getRetryAt(),
+            'finished_at' => $this->getFinishedAt()
         ];
     }
 }

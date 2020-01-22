@@ -23,6 +23,6 @@ trait TrackableJob
     protected function setOutput(array $output = [])
     {
          $ctrl = app(TrackedJobController::class);
-         $crtl->setOutput($this->getTrackId(), $output);
+         $ctrl->setOutput($this->getTrackId(), $output);
     }
 }
