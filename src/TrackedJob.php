@@ -31,8 +31,9 @@ class TrackedJob implements \JsonSerializable
         $this->type = $type;
         $this->input = $input;
         $this->output = [];
-        $this->status = self::STATUS_QUEUED;
-        $this->queuedAt = Carbon::now();
+        //$this->status = self::STATUS_QUEUED;
+        //$this->queuedAt = Carbon::now();
+        $this->setStatus(self::STATUS_QUEUED);
         $this->tries = 0;
     }
 
@@ -46,18 +47,27 @@ class TrackedJob implements \JsonSerializable
         switch($status)
         {
             case self::STATUS_EXECUTING:
-                if($this->tries==0)
+                if($this->tries==0) {
                     $this->startedAt = Carbon::now();
-                else
+                    $this->try();
+                } else {
                     $status = self::STATUS_RETRYING;
-
-                $this->retryAt = Carbon::now();
-                $this->try();
+                    $this->setStatus($status);
+                }
                 break;
             case self::STATUS_FINISHED:
             case self::STATUS_FAILED:
                 $this->finishedAt = Carbon::now();
                 break;
+            case self::STATUS_QUEUED:
+                $this->queuedAt = Carbon::now();
+                break;
+            case self::STATUS_RETRYING:
+                $this->retryAt = Carbon::now();
+                $this->try();
+                break;
+            default:
+                throw new \Exception(sprintf("Status '%s' not allowed.", $status));
 
         }
 

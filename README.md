@@ -4,6 +4,8 @@ Track Laravel Jobs, saving status, inputs, outputs and date times during a week 
 
 Based on [imTigger/laravel-job-status](https://github.com/imTigger/laravel-job-status).
 
+Jobs tracks is saved during a week in Redis. This time can be setted in config file.
+
 ## Installation
 
 ### Composer
@@ -24,7 +26,7 @@ composer require rafaeltovar/laravel-job-trackable
 
 ## Instructions
 
-1. Include Service Provider into `providers` section in `config/app.php`.
+*Step 1.* Include Service Provider into `providers` section in `config/app.php`.
 
 ```php
 'providers' => [
@@ -33,7 +35,8 @@ composer require rafaeltovar/laravel-job-trackable
 ];
 ```
 
-2. Add trait to our Laravel `Job` and init track with `track` method.
+*Step 2.* Add trait to our Laravel `Job` and init track with `track` method.
+*Step 3.** Use `setOutput` method for save final Job output.
 
 ```php
 <?php
@@ -57,3 +60,32 @@ class TrackedJob extends Job
     }
 }
 ```
+
+## Using Controller
+
+If you need use the controller for get jobs can you use it.
+
+```php
+$ctrl = app(\LaravelJobTrackable\TrackedJobController::class);
+
+try {
+    $track = $ctrl->get($idJobTrack);
+
+    // Do something...
+} catch (\Exception $e) { // not found
+    // Do something...
+}
+```
+
+## Object TrackedJob
+
+The object `LaravelJobTrackable\TrackedJob` have the following public methods:
+// TODO
+
+| Method                          | Allowed values |   |   |   |
+|---------------------------------|----------------|---|---|---|
+| `getStatus() : string`          |                |   |   |   |
+| `setStatus(string) : self`      |                |   |   |   |
+| `setOutput(array)`              |                |   |   |   |
+| `getOutput(): array`            |                |   |   |   |
+| `getQueuedAt() ?\Carbon\Carbon` |                |   |   |   |
